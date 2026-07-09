@@ -1,3 +1,4 @@
 experiment/
 .venv/
 downloaded_files/
+src/__pycache__
