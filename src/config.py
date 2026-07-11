@@ -16,6 +16,8 @@ OUTPUT_PATH=r'output'
 
 SUBREDDIT='AskReddit'
 
+REDDIT_URL=f'https://www.reddit.com/r/{SUBREDDIT}/hot/'
+
 NUMBER_OF_COMMENTS=8
 
 MAX_COMMENT_CHAR=150
