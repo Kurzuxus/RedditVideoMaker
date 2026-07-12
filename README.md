@@ -25,7 +25,7 @@ A Python project that automatically turns Reddit posts into short-form videos.
 * [X] Generate voice
 * [X] Render the final video
 * [X] Add background gameplay
-* [ ] Improve customization
+* [X] Improve customization
 
 ## Future improvements
 
