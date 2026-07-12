@@ -3,5 +3,5 @@ experiment/
 downloaded_files/
 src/__pycache__
 tiktok_voice/
-assets/
-output/
+assets/minecraft/minecraft.mp4
+output/output_video.mp4
