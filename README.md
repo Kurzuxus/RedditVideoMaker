@@ -21,10 +21,10 @@ A Python project that automatically turns Reddit posts into short-form videos.
 
 ## Todo
 
-* [ ] Scrape Reddit posts
-* [ ] Generate voice
-* [ ] Render the final video
-* [ ] Add background gameplay
+* [X] Scrape Reddit posts
+* [X] Generate voice
+* [X] Render the final video
+* [X] Add background gameplay
 * [ ] Improve customization
 
 ## Future improvements
