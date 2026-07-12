@@ -7,7 +7,7 @@ AUDIOS=r'assets\generated\audios'
 
 MINECRAFT_VIDEO=r'assets\minecraft\minecraft.mp4'
 
-OUTPUT_PATH=r'output'
+OUTPUT_PATH=r'output/output_video.mp4'
 
 
 #--------------------------------------
