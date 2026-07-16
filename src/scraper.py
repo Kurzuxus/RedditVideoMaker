@@ -4,14 +4,14 @@ from pathlib import Path
 from selenium.webdriver.common.by import By
 from seleniumbase import Driver
 
-from config import (
+from .config import (
     AUDIOS,
     IMAGES,
     MAX_COMMENT_CHAR,
     NUMBER_OF_COMMENTS,
     REDDIT_URL,
 )
-from tiktok_voice import Voice, tts
+from .tiktok_voice import Voice, tts
 
 
 class DataScraper:
