@@ -6,20 +6,12 @@ class RedditVideoMakerApp:
     def __init__(self, page: ft.Page):
         self.page = page
         self.configure_page()
-        self.steps = [
-            ft.Text("⏳ Scraping Reddit...", size=18),
-            ft.Text("⏳ Generating Images & Audio...", size=18),
-            ft.Text("⏳ Editing Video...", size=18),
-            ]
-        
-        self.build_ui()
 
-    # -----------------------
-    # Page Configuration
-    # -----------------------
+        self.build_ui()
 
     def update_step(self, index: int, done: bool) -> None:
         icon = "✅" if done else "⏳"
+        color= "white" if done else ft.Colors.GREY_500
 
         titles = [
             "Scraping Reddit...",
@@ -28,9 +20,9 @@ class RedditVideoMakerApp:
         ]
 
         self.steps[index].value = f"{icon} {titles[index]}"
+        self.steps[index].color=color
 
-        self.page.update()
-
+        self.steps[index].update()
 
     def configure_page(self) -> None:
         self.page.fonts = {
@@ -39,10 +31,6 @@ class RedditVideoMakerApp:
 
         self.page.vertical_alignment = ft.MainAxisAlignment.START
         self.page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-
-    # -----------------------
-    # Event Handlers
-    # -----------------------
 
     def start_process(self) -> None:
 
@@ -66,13 +54,9 @@ class RedditVideoMakerApp:
     def clear_files(self) -> None:
         print("Clear Files")
 
-    # -----------------------
-    # UI Builders
-    # -----------------------
-
     def create_logo(self) -> ft.Image:
         return ft.Image(
-            src="site_logo.png",
+            src="app_logo.png",
             width=100,
             height=100,
         )
@@ -129,6 +113,15 @@ class RedditVideoMakerApp:
             ),
         )
 
+    def create_process_steps(self)-> list[ft.Text]:
+        self.steps = [
+            ft.Text("⏳ Scraping Reddit...", size=18,font_family='Pixel',color=ft.Colors.GREY_600),
+            ft.Text("⏳ Generating Images & Audio...", size=18,font_family='Pixel',color=ft.Colors.GREY_600),
+            ft.Text("⏳ Editing Video...", size=18,font_family='Pixel',color=ft.Colors.GREY_600),
+            ]
+        
+        return self.steps
+    
     def create_footer(self) -> ft.Container:
         return ft.Container(
             content=ft.Text(
@@ -141,14 +134,10 @@ class RedditVideoMakerApp:
             margin=ft.margin.Margin.only(top=30, bottom=10),
         )
 
-    # -----------------------
-    # Build Layout
-    # -----------------------
-
     def build_ui(self) -> None:
 
         progress_panel = ft.Column(
-            controls=self.steps,
+            controls=self.create_process_steps(), # type: ignore
             spacing=8,
             horizontal_alignment=ft.CrossAxisAlignment.START,
         )
@@ -185,12 +174,9 @@ class RedditVideoMakerApp:
         )
 
 
-# -----------------------
-# App Entry Point
-# -----------------------
 
 def main(page: ft.Page):
     RedditVideoMakerApp(page)
 
 
-ft.run(main, assets_dir="assets1")
+ft.run(main, assets_dir="assets")
