@@ -1,23 +1,32 @@
-#--------------------------------------
-#PATHS
-#--------------------------------------
+from pathlib import Path
 
-IMAGES=r'assets\generated\images'
-AUDIOS=r'assets\generated\audios'
+# Root of the project
+ROOT_DIR = Path(__file__).resolve().parent.parent
 
-MINECRAFT_VIDEO=r'assets\minecraft\minecraft.mp4'
+# --------------------------------------
+# PATHS
+# --------------------------------------
 
-OUTPUT_PATH=r'output/output_video.mp4'
+ASSETS = ROOT_DIR / "assets"
 
+GENERATED = ASSETS / "generated"
 
-#--------------------------------------
-#REDDIT
-#--------------------------------------
+IMAGES = GENERATED / "images"
 
-SUBREDDIT='AskReddit'
+AUDIOS = GENERATED / "audios"
 
-REDDIT_URL=f'https://www.reddit.com/r/{SUBREDDIT}/hot/'
+MINECRAFT_VIDEO = ASSETS / "minecraft" / "minecraft.mp4"
 
-NUMBER_OF_COMMENTS=8
+OUTPUT_PATH = ROOT_DIR / "output" / "output_video.mp4"
 
-MAX_COMMENT_CHAR=150
+# --------------------------------------
+# REDDIT
+# --------------------------------------
+
+SUBREDDIT = "AskReddit"
+
+REDDIT_URL = f"https://www.reddit.com/r/{SUBREDDIT}/hot/"
+
+NUMBER_OF_COMMENTS = 8
+
+MAX_COMMENT_CHAR = 150

@@ -1,6 +1,8 @@
 import flet as ft
 from src.scraper import DataScraper
 from src.video_editor import VideoEditor
+import flet_video as ftv
+from src.config import OUTPUT_PATH
 
 class RedditVideoMakerApp:
     def __init__(self, page: ft.Page):
@@ -40,7 +42,6 @@ class RedditVideoMakerApp:
             scraper.run()
 
             self.update_step(0, True)
-
         finally:
             self.update_step(1, True)
             scraper.close()
@@ -50,10 +51,16 @@ class RedditVideoMakerApp:
         editor.run()
 
         self.update_step(2, True)
+
+        self.create_video_box()
         
     def clear_files(self) -> None:
-        print("Clear Files")
+        self.page.controls.clear()
+        self.page.update()
 
+        self.build_ui()
+        self.page.update()
+       
     def create_logo(self) -> ft.Image:
         return ft.Image(
             src="app_logo.png",
@@ -126,13 +133,29 @@ class RedditVideoMakerApp:
         return ft.Container(
             content=ft.Text(
                 "© 2026 Informatica • Reddit Video Maker",
-                size=14,
+                size=16,
                 color=ft.Colors.GREY_500,
                 italic=True,
+                font_family='Pixel'
             ),
             alignment=ft.alignment.Alignment.CENTER,
             margin=ft.margin.Margin.only(top=30, bottom=10),
         )
+
+    def create_video_box(self) -> None:
+        video_box=ftv.Video(
+            playlist=[ftv.VideoMedia(resource=str(OUTPUT_PATH))],
+            width=500,
+            height=600,
+        )
+
+        self.video_column.width=500
+        self.video_column.height=600
+        self.page.scroll=ft.ScrollMode.ALWAYS
+
+        self.video_column.controls.append(video_box)
+
+        self.page.update()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
 
     def build_ui(self) -> None:
 
@@ -159,6 +182,12 @@ class RedditVideoMakerApp:
             alignment=ft.MainAxisAlignment.CENTER,
         )
 
+        self.video_column=ft.Column(
+            scroll=ft.ScrollMode.ALWAYS,
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+        )
+
         footer = ft.Column(
             controls=[self.create_footer()],
             alignment=ft.MainAxisAlignment.END,
@@ -170,6 +199,7 @@ class RedditVideoMakerApp:
             header,
             buttons,
             progress_panel,
+            self.video_column,
             footer
         )
 
