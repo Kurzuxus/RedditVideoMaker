@@ -26,7 +26,7 @@ A Python project that automatically turns Reddit posts into short-form videos.
 * [ ] Add a GUI settings panel (requires splitting the config.py to two files)
 * [ ] Improve the speed of voice generation and screenshots
 * [ ] Add error handling stopping resource leakage
-* [ ] Fix the size of the comment's screenshots for better scaling with the output video
+* [X] Fix the size of the comment's screenshots for better scaling with the output video
 
 ## Future improvements
 
