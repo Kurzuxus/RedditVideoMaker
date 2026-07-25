@@ -9,7 +9,7 @@ from moviepy import (
     concatenate_videoclips,
 )
 
-from .config import (
+from src.config import (
     IMAGES,
     AUDIOS,
     MINECRAFT_VIDEO,

@@ -1,8 +1,9 @@
 import flet as ft
+import flet_video as ftv
 from src.scraper import DataScraper
 from src.video_editor import VideoEditor
-import flet_video as ftv
 from src.config import OUTPUT_PATH
+
 
 class RedditVideoMakerApp:
     def __init__(self, page: ft.Page):
@@ -33,7 +34,8 @@ class RedditVideoMakerApp:
 
         self.page.vertical_alignment = ft.MainAxisAlignment.START
         self.page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-
+        self.page.title='RVM'
+        
     def start_process(self) -> None:
 
         scraper = DataScraper()

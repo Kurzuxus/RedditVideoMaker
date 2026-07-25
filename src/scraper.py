@@ -4,19 +4,18 @@ from pathlib import Path
 from selenium.webdriver.common.by import By
 from seleniumbase import Driver
 
-from .config import (
+from src.config import (
     AUDIOS,
     IMAGES,
     MAX_COMMENT_CHAR,
     NUMBER_OF_COMMENTS,
     REDDIT_URL,
 )
-from .tiktok_voice import Voice, tts
-
+from src.tiktok_voice import Voice, tts
 
 class DataScraper:
     def __init__(self) -> None:
-        self.driver = Driver(uc=True, browser="brave")
+        self.driver = Driver(uc=True,browser="brave")
 
     def run(self) -> None:
 
