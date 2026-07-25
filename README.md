@@ -19,20 +19,21 @@ A Python project that automatically turns Reddit posts into short-form videos.
 * Text-to-Speech
 
 
-## Todo
+## Updates for V0.1.1
 
-* [X] Scrape Reddit posts
-* [X] Generate voice
-* [X] Render the final video
-* [X] Add background gameplay
-* [X] Improve customization
+* [ ] Improve the callback functionality 
+* [ ] Add a GUI settings panel (requires splitting the config.py to two files)
+* [ ] Improve the speed of voice generation and screenshots
+* [ ] Add error handling stopping resource leakage
+* [ ] Fix the size of the comment's screenshots for better scaling with the output video
 
 ## Future improvements
 
-* [ ] Add GUI interaction
 * [ ] Add subtitles
 * [ ] Add customization options with background video and voices
 * [ ] Improve the speed and efficiency of video making process
+* [ ] Add an AI Agent for generating content titles, tags, descriptions and thumbnails
+
 
 
 
