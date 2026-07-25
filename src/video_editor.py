@@ -9,7 +9,7 @@ from moviepy import (
     concatenate_videoclips,
 )
 
-from src.config import (
+from config import (
     IMAGES,
     AUDIOS,
     MINECRAFT_VIDEO,
@@ -80,8 +80,10 @@ class VideoEditor:
     ) -> CompositeVideoClip:
 
 
-        story = story.with_position(
-            ("center", "center")
+        story = (
+            story
+            .resized(1.30)
+            .with_position(("center", "center"))
         )
 
         return CompositeVideoClip(

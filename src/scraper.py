@@ -4,14 +4,14 @@ from pathlib import Path
 from selenium.webdriver.common.by import By
 from seleniumbase import Driver
 
-from src.config import (
+from config import (
     AUDIOS,
     IMAGES,
     MAX_COMMENT_CHAR,
     NUMBER_OF_COMMENTS,
     REDDIT_URL,
 )
-from src.tiktok_voice import Voice, tts
+from tiktok_voice import Voice, tts
 
 class DataScraper:
     def __init__(self) -> None:
@@ -23,6 +23,8 @@ class DataScraper:
 
         self.open_subreddit()
         self.open_random_post()
+        self.driver.fullscreen_window()
+
         self.process_post()
 
     def open_subreddit(self) -> None:
@@ -65,19 +67,25 @@ class DataScraper:
             if len(accepted_comments) >= NUMBER_OF_COMMENTS:
                 break
 
-            paragraph = comment.find_element(By.TAG_NAME, "p")
+            paragraphs:list = comment.find_elements(By.TAG_NAME, "p")
 
-            if len(paragraph.text) >= MAX_COMMENT_CHAR:
+            comment_text: str = " ".join(
+                paragraph.text.strip()
+                for paragraph in paragraphs
+                if paragraph.text.strip()
+            ).strip()
+
+            if len(comment_text) >= MAX_COMMENT_CHAR:
                 continue
 
-            paragraph.screenshot(f"{IMAGES}/shot{index}.png")
+            comment.screenshot(f"{IMAGES}/shot{index}.png")
 
             self.transcribe_text(
-                text=paragraph.text,
+                text=comment_text,
                 output_path=f"{AUDIOS}/audio{index}.mp3",
             )
 
-            accepted_comments.append(paragraph.text)
+            accepted_comments.append(comment_text)
 
         return accepted_comments
 

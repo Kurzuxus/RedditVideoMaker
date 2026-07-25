@@ -28,4 +28,4 @@ REDDIT_URL = f"https://www.reddit.com/r/{SUBREDDIT}/hot/"
 
 NUMBER_OF_COMMENTS = 8
 
-MAX_COMMENT_CHAR = 150
+MAX_COMMENT_CHAR = 300
