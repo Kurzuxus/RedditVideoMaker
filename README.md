@@ -2,6 +2,8 @@
 
 A Python project that automatically turns Reddit posts into short-form videos.
 
+![Reddit Video Maker](assets/preview.png)
+
 ## What it does
 
 * Gets posts from Reddit
@@ -17,7 +19,6 @@ A Python project that automatically turns Reddit posts into short-form videos.
 * MoviePy
 * FFmpeg
 * Text-to-Speech
-
 
 ## Updates for V0.1.1
 
