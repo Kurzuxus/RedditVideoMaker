@@ -4,14 +4,15 @@ from pathlib import Path
 from selenium.webdriver.common.by import By
 from seleniumbase import Driver
 
-from src.config import (
+from config import (
     AUDIOS,
     IMAGES,
     MAX_COMMENT_CHAR,
     NUMBER_OF_COMMENTS,
     REDDIT_URL,
 )
-from src.tiktok_voice import Voice, tts
+from tiktok_voice import Voice, tts
+from concurrent.futures import ThreadPoolExecutor
 
 class DataScraper:
     def __init__(self,callback=None) -> None:
@@ -54,29 +55,29 @@ class DataScraper:
 
         self.screenshot_post()
 
-        self.transcribe_text(
-            text=title,
-            output_path=f"{AUDIOS}/audio0.mp3",
-        )
-
         comments = self.driver.find_elements(
             'shreddit-comment[depth="0"]'
         )
 
-        self.process_comments(comments)
+        self.process_comments(
+            comments=comments,
+            title=title,
+        )
 
-    def process_comments(self, comments: list) -> list[str]:
+    def process_comments(self,comments: list,title: str) -> list[str]:
 
         accepted_comments = []
+
+        tts_jobs = [(title,f"{AUDIOS}/audio0.mp3")]
 
         for index, comment in enumerate(comments, start=1):
 
             if len(accepted_comments) >= NUMBER_OF_COMMENTS:
                 break
 
-            paragraphs:list = comment.find_elements(By.TAG_NAME, "p")
+            paragraphs = comment.find_elements(By.TAG_NAME, "p")
 
-            comment_text: str = " ".join(
+            comment_text = " ".join(
                 paragraph.text.strip()
                 for paragraph in paragraphs
                 if paragraph.text.strip()
@@ -87,12 +88,28 @@ class DataScraper:
 
             comment.screenshot(f"{IMAGES}/shot{index}.png")
 
-            self.transcribe_text(
-                text=comment_text,
-                output_path=f"{AUDIOS}/audio{index}.mp3",
+            accepted_comments.append(comment_text)
+
+            tts_jobs.append(
+                (
+                    comment_text,
+                    f"{AUDIOS}/audio{index}.mp3",
+                )
             )
 
-            accepted_comments.append(comment_text)
+        with ThreadPoolExecutor(max_workers=4) as executor:
+
+            futures = [
+                executor.submit(
+                    self.transcribe_text,
+                    text,
+                    output_path,
+                )
+                for text, output_path in tts_jobs
+            ]
+
+            for future in futures:
+                future.result()
 
         return accepted_comments
 
