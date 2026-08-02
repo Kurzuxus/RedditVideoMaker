@@ -9,7 +9,7 @@ from moviepy import (
     concatenate_videoclips,
 )
 
-from config import (
+from src.config import (
     IMAGES,
     AUDIOS,
     MINECRAFT_VIDEO,
@@ -18,17 +18,38 @@ from config import (
 
 
 class VideoEditor:
+    def __init__(self,callback=None) -> None:
+        self.callback=callback
+
+        self.audio_clips: list[AudioFileClip] = []
+        self.video_clips: list = []
+
+        self.story = None
+        self.background = None
+        self.final_video = None
+
     def run(self) -> None:
-        story = self.create_story()
+        try:
+            self.story = self.create_story()
 
-        background = self.create_background(story.duration)
+            self.background = self.create_background(self.story.duration)
 
-        final_video = self.combine_story_and_background(
-            story,
-            background,
-        )
+            self.final_video = self.combine_story_and_background(
+                self.story,
+                self.background,
+            )
 
-        self.export_video(final_video)
+            self.export_video(self.final_video)
+
+            self.notify_process('Editing Video...')
+
+        finally:
+            self.cleanup()
+
+
+    def notify_process(self,message:str):
+        if self.callback:
+            self.callback(message)
 
     def load_assets(self) -> tuple[list[Path], list[Path]]:
 
@@ -46,6 +67,7 @@ class VideoEditor:
         for image_path, audio_path in zip(images, audios):
 
             audio = AudioFileClip(str(audio_path))
+            self.audio_clips.append(audio)
 
             clip = (
                 ImageClip(str(image_path))
@@ -53,6 +75,7 @@ class VideoEditor:
                 .with_audio(audio)
             )
 
+            self.video_clips.append(clip)
             clips.append(clip)
 
         return concatenate_videoclips(clips) # type: ignore
@@ -63,6 +86,7 @@ class VideoEditor:
     ) -> VideoFileClip:
 
         minecraft = VideoFileClip(str(MINECRAFT_VIDEO))
+        self.video_clips.append(minecraft)
 
         max_start = minecraft.duration - duration
 
@@ -85,6 +109,7 @@ class VideoEditor:
             .resized(1.30)
             .with_position(("center", "center"))
         )
+        self.video_clips.append(story)
 
         return CompositeVideoClip(
             [
@@ -104,7 +129,28 @@ class VideoEditor:
             codec="libx264",
             audio_codec="aac",
         )
+        
+    def cleanup(self):
+        for audio in self.audio_clips:
+            try:
+                audio.close()
+            except Exception as e:
+                print(f"Failed to close clip: {e}")
 
+        for clip in self.video_clips:
+            try:
+                clip.close()
+            except Exception as e:
+                print(f"Failed to close clip: {e}")
+
+        if self.story:
+            self.story.close()
+
+        if self.final_video:
+            self.final_video.close()
+
+        self.audio_clips.clear()
+        self.video_clips.clear()
 
 if __name__ == "__main__":
     editor = VideoEditor()

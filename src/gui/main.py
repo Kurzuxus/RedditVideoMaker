@@ -35,24 +35,32 @@ class RedditVideoMakerApp:
         self.page.vertical_alignment = ft.MainAxisAlignment.START
         self.page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
         self.page.title='RVM'
-        
+
+
+    def on_scraper_update(self, message: str) -> None:
+
+        if message == "Scraping Reddit...":
+            self.update_step(0, True)
+        elif message =="Generating Images & Audio...":
+            self.update_step(1, True)
+        elif message =="Editing Video...":
+            self.update_step(2, True)
+
+        self.page.update()
+
     def start_process(self) -> None:
 
-        scraper = DataScraper()
+        scraper = DataScraper(callback=self.on_scraper_update)
 
         try:
             scraper.run()
 
-            self.update_step(0, True)
         finally:
-            self.update_step(1, True)
             scraper.close()
 
-        editor = VideoEditor()
+        editor = VideoEditor(callback=self.on_scraper_update)
 
         editor.run()
-
-        self.update_step(2, True)
 
         self.create_video_box()
         

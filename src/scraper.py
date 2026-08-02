@@ -4,18 +4,19 @@ from pathlib import Path
 from selenium.webdriver.common.by import By
 from seleniumbase import Driver
 
-from config import (
+from src.config import (
     AUDIOS,
     IMAGES,
     MAX_COMMENT_CHAR,
     NUMBER_OF_COMMENTS,
     REDDIT_URL,
 )
-from tiktok_voice import Voice, tts
+from src.tiktok_voice import Voice, tts
 
 class DataScraper:
-    def __init__(self) -> None:
+    def __init__(self,callback=None) -> None:
         self.driver = Driver(uc=True,browser="brave")
+        self.callback=callback
 
     def run(self) -> None:
 
@@ -23,9 +24,15 @@ class DataScraper:
 
         self.open_subreddit()
         self.open_random_post()
+        self.notify_process('Scraping Reddit...')
         self.driver.fullscreen_window()
 
         self.process_post()
+        self.notify_process('Generating Images & Audio...')
+
+    def notify_process(self,message:str):
+        if self.callback:
+            self.callback(message)
 
     def open_subreddit(self) -> None:
 
