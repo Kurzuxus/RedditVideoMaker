@@ -1,3 +1,5 @@
+from typing import Any
+
 import flet as ft
 import flet_video as ftv
 from src.scraper import DataScraper
@@ -71,11 +73,30 @@ class RedditVideoMakerApp:
         self.build_ui()
         self.page.update()
        
+    def create_settings_bu(self) -> ft.Container:
+        return ft.Container(
+            bgcolor="#181a1f",
+            border_radius=8,
+            padding=ft.Padding.all(3),
+            border=ft.Border(
+                right=ft.BorderSide(4, "#cfd0d1"),
+                bottom=ft.BorderSide(3, "#cfd0d1"),
+                top=ft.BorderSide(1.5, "#cfd0d1"),
+                left=ft.BorderSide(1.5, "#cfd0d1"),
+            ),
+            content=ft.Image(
+                src='settings_gear.png',
+                width=30,
+                height=30
+            ),
+            on_click=lambda e: self.page.show_dialog(AppDialog())
+        )
+
     def create_logo(self) -> ft.Image:
         return ft.Image(
             src="app_logo.png",
-            width=100,
-            height=100,
+            width=150,
+            height=150,
         )
 
     def create_title(self) -> ft.Text:
@@ -177,7 +198,8 @@ class RedditVideoMakerApp:
 
         header = ft.Column(
             controls=[
-                self.create_logo(),
+                ft.Row(controls=[self.create_logo(),self.create_settings_bu()],
+                    alignment=ft.MainAxisAlignment.CENTER),
                 self.create_title(),
             ],
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -213,8 +235,295 @@ class RedditVideoMakerApp:
             footer
         )
 
+class AppDialog(ft.AlertDialog):
+    def __init__(self,**kwds: Any) -> None:
+        super().__init__(**kwds)
 
+        self.content=self.content_construction()
+        self.bgcolor='#17191E'
+        self.scrollable=True
 
+        self.actions=self.create_action_buttons()
+
+    def create_heading(self):
+        return ft.Row(
+            controls=[
+                ft.Image(
+                    src='settings_gear.png',
+                    width=30,
+                    height=30
+                ),
+                ft.Text(
+                    value='Settings',
+                    font_family='Pixel',
+                    size=24,
+                    weight='bold' # pyright: ignore[reportArgumentType]
+                )
+            ] # pyright: ignore[reportArgumentType]
+        )
+
+    def create_subreddit_settings(self):
+        return ft.Container(
+            padding=ft.Padding.only(top=10),
+            content=ft.Column(
+                controls=[
+                    ft.Row(
+                        controls=[
+                            ft.Icon(
+                                icon=ft.Icons.CIRCLE_ROUNDED,
+                                color="#F5980A",
+                                size=10
+                            ),
+                            ft.Text(
+                                value="Subreddit",
+                                font_family="Pixel",
+                                size=22,
+                            )
+                        ]
+                    ),
+                    ft.Text(
+                        value='Choose the subreddit to get posts from.',
+                        font_family='Pixel',
+                        color="#78787a",
+                        size=16
+                        ),
+                    ft.TextField(
+                        bgcolor='#191c20',
+                        border_color='#595957',
+                        border_radius=12,
+                        cursor_color='#F5980A',
+                        text_style=ft.TextStyle(
+                            font_family='Pixel'
+                        ),
+                        text_size=18,
+                        helper='Example: AskReddit',
+                        helper_style=ft.TextStyle(
+                            font_family='Pixel',
+                            color='#78787a',
+                            size=16
+                        )
+                    )
+                ]
+            )
+        )
+
+    def create_comments_settings(self):
+        return ft.Container(
+            padding=ft.Padding.only(top=10),
+            content=ft.Column(
+                controls=[
+                    ft.Row(
+                        controls=[
+                            ft.Icon(
+                                icon=ft.Icons.CIRCLE_ROUNDED,
+                                color="#F5980A",
+                                size=10
+                            ),
+                            ft.Text(
+                                value="Number of Comments",
+                                font_family="Pixel",
+                                size=22,
+                            )
+                        ]
+                    ),
+                    ft.Text(
+                        value='Set how many comments to include in a video.',
+                        font_family='Pixel',
+                        color="#78787a",
+                        size=16
+                        ),
+                    ft.Row(
+                        spacing=0,
+                        controls=[
+                            ft.Container(
+                                border=ft.Border.all(color='#595957',width=2),
+                                bgcolor='#191c20',
+                                border_radius=8,
+                                width=45,
+                                height=45,
+                                content=ft.Icon(
+                                    icon=ft.Icons.REMOVE_ROUNDED
+                                )
+                            ),
+                            ft.TextField(
+                                bgcolor='#191c20',
+                                border_color='#27282a',
+                                cursor_color='#F5980A',
+                                border_radius=0,
+                                height=45,
+                                width=120,
+                                text_align=ft.TextAlign.CENTER,
+                                text_style=ft.TextStyle(
+                                    font_family='Pixel'
+                                ),
+                                text_size=15
+                            ),
+                            ft.Container(
+                                border=ft.Border.all(color='#595957',width=2),
+                                bgcolor='#191c20',
+                                border_radius=8,
+                                width=45,
+                                height=45,
+                                content=ft.Icon(
+                                    icon=ft.Icons.ADD_ROUNDED
+                                )
+                            ),                       
+                        ]
+                    ),
+                    ft.Text(
+                        value='Min: 1 ● Max: 20',
+                        style=ft.TextStyle(
+                            font_family='Pixel',
+                            color='#78787a',
+                            size=16
+                        )
+                    )
+                ]
+            )
+        )
+
+    def create_length_settings(self):
+        return ft.Container(
+            padding=ft.Padding.only(top=10),
+            content=ft.Column(
+                controls=[
+                    ft.Row(
+                        controls=[
+                            ft.Icon(
+                                icon=ft.Icons.CIRCLE_ROUNDED,
+                                color="#F5980A",
+                                size=10
+                            ),
+                            ft.Text(
+                                value="Max Comment Length",
+                                font_family="Pixel",
+                                size=22,
+                            )
+                        ]
+                    ),
+                    ft.Text(
+                        value='Set the maximum length (in characters) for a comment.',
+                        font_family='Pixel',
+                        color="#78787a",
+                        size=16
+                        ),
+                    ft.Row(
+                        spacing=0,
+                        controls=[
+                            ft.Container(
+                                border=ft.Border.all(color='#595957',width=2),
+                                bgcolor='#191c20',
+                                border_radius=8,
+                                width=45,
+                                height=45,
+                                content=ft.Icon(
+                                    icon=ft.Icons.REMOVE_ROUNDED
+                                )
+                            ),
+                            ft.TextField(
+                                bgcolor='#191c20',
+                                border_color='#27282a',
+                                cursor_color='#F5980A',
+                                border_radius=0,
+                                height=45,
+                                width=120,
+                                text_align=ft.TextAlign.CENTER,
+                                text_style=ft.TextStyle(
+                                    font_family='Pixel'
+                                ),
+                                text_size=15
+                            ),
+                            ft.Container(
+                                border=ft.Border.all(color='#595957',width=2),
+                                bgcolor='#191c20',
+                                border_radius=8,
+                                width=45,
+                                height=45,
+                                content=ft.Icon(
+                                    icon=ft.Icons.ADD_ROUNDED
+                                )
+                            ),                       
+                        ]
+                    ),
+                    ft.Text(
+                        value='Min: 50 ● Max: 1000',
+                        style=ft.TextStyle(
+                            font_family='Pixel',
+                            color='#78787a',
+                            size=16
+                        )
+                    )
+                ]
+            )
+        )
+
+    def create_action_buttons(self):
+        button1 = ft.Container(
+            bgcolor="#17191E",
+            width=100,
+            height=40,
+            border_radius=15,
+            alignment=ft.alignment.Alignment.CENTER,
+            border=ft.Border(
+                right=ft.BorderSide(6, "white"),
+                bottom=ft.BorderSide(4, "white"),
+                top=ft.BorderSide(1.5, "white"),
+                left=ft.BorderSide(1.5, "white"),
+            ),
+            content=ft.Text(
+                "Cancel",
+                size=20,
+                color="white",
+                font_family="Pixel",
+            ),
+        )
+
+        button2 = ft.Container(
+            bgcolor="orange",
+            width=150,
+            height=40,
+            border_radius=15,
+            alignment=ft.alignment.Alignment.CENTER,
+            border=ft.Border(
+                right=ft.BorderSide(6, "white"),
+                bottom=ft.BorderSide(4, "white"),
+                top=ft.BorderSide(1.5, "white"),
+                left=ft.BorderSide(1.5, "white"),
+            ),
+            content=ft.Text(
+                "Save Settings",
+                size=18,
+                color="white",
+                font_family="Pixel",
+            ),
+        )
+
+        return [button1, button2]
+
+    def content_construction(self):
+        return ft.Container(
+            width=400,
+            height=600,
+            content=ft.Column(
+                controls=[
+                    self.create_heading(),
+                    self.create_subreddit_settings(),
+                    ft.Divider(
+                        color='#595957',
+                        leading_indent=5,
+                        trailing_indent=5
+                    ),
+                    self.create_comments_settings(),
+                    ft.Divider(
+                        color='#595957',
+                        leading_indent=5,
+                        trailing_indent=5
+                    ),
+                    self.create_length_settings()
+                ]
+            )
+        )
+    
 def main(page: ft.Page):
     RedditVideoMakerApp(page)
 
