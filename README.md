@@ -20,7 +20,7 @@ A Python project that automatically turns Reddit posts into short-form videos.
 * FFmpeg
 * Text-to-Speech
 
-## Updates for V0.1.1
+## Updates for V0.1.1 (Completed ✅)
 
 * [X] Improve the callback functionality 
 * [X] Add a GUI settings panel (requires splitting the config.py to two files)
