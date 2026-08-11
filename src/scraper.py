@@ -7,15 +7,22 @@ from seleniumbase import Driver
 from src.config import (
     AUDIOS,
     IMAGES,
-    MAX_COMMENT_CHAR,
-    NUMBER_OF_COMMENTS,
-    REDDIT_URL,
+    load_user_settings
 )
 from src.tiktok_voice import Voice, tts
 from concurrent.futures import ThreadPoolExecutor
 
 class DataScraper:
     def __init__(self,callback=None) -> None:
+
+        settings=load_user_settings()
+
+        self.SUBREDDIT = settings["subreddit"]
+        self.NUMBER_OF_COMMENTS = settings["number_of_comments"]
+        self.MAX_COMMENT_CHAR = settings["max_comment_char"]
+
+
+
         self.driver = Driver(uc=True,browser="brave")
         self.callback=callback
 
@@ -37,7 +44,7 @@ class DataScraper:
 
     def open_subreddit(self) -> None:
 
-        self.driver.get(REDDIT_URL)
+        self.driver.get(f"https://www.reddit.com/r/{self.SUBREDDIT}/hot/")
 
     def open_random_post(self) -> None:
 
@@ -72,7 +79,7 @@ class DataScraper:
 
         for index, comment in enumerate(comments, start=1):
 
-            if len(accepted_comments) >= NUMBER_OF_COMMENTS:
+            if len(accepted_comments) >= self.NUMBER_OF_COMMENTS:
                 break
 
             paragraphs = comment.find_elements(By.TAG_NAME, "p")
@@ -83,7 +90,7 @@ class DataScraper:
                 if paragraph.text.strip()
             ).strip()
 
-            if len(comment_text) >= MAX_COMMENT_CHAR:
+            if len(comment_text) >= self.MAX_COMMENT_CHAR:
                 continue
 
             comment.screenshot(f"{IMAGES}/shot{index}.png")
@@ -96,6 +103,7 @@ class DataScraper:
                     f"{AUDIOS}/audio{index}.mp3",
                 )
             )
+            self.driver.sleep(0.5)
 
         with ThreadPoolExecutor(max_workers=4) as executor:
 

@@ -1,10 +1,11 @@
 from typing import Any
+from json import dump,load
 
 import flet as ft
 import flet_video as ftv
 from src.scraper import DataScraper
 from src.video_editor import VideoEditor
-from src.config import OUTPUT_PATH
+from src.config import OUTPUT_PATH,USER_SETTINGS_PATH,load_user_settings
 
 
 class RedditVideoMakerApp:
@@ -239,11 +240,35 @@ class AppDialog(ft.AlertDialog):
     def __init__(self,**kwds: Any) -> None:
         super().__init__(**kwds)
 
+        settings=load_user_settings()
+
+        self.SUBREDDIT = settings["subreddit"]
+        self.NUMBER_OF_COMMENTS = settings["number_of_comments"]
+        self.MAX_COMMENT_CHAR = settings["max_comment_char"]
+
         self.content=self.content_construction()
         self.bgcolor='#17191E'
         self.scrollable=True
 
-        self.actions=self.create_action_buttons()
+        self.actions=self.create_action_buttons() # type: ignore
+
+    def increment_values(self, e:ft.ControlEvent):
+        if abs(e.data) == 1:
+            current_value=int(self.comments_field.value)
+            if e.data >0:
+                new_value=current_value + 1
+            else:
+                new_value=current_value - 1
+            self.comments_field.value=str(new_value)
+            self.comments_field.update()
+        else:
+            current_value=int(self.length_field.value)
+            if e.data >0:
+                new_value=current_value + 1
+            else:
+                new_value=current_value - 1
+            self.length_field.value=str(new_value)
+            self.length_field.update()            
 
     def create_heading(self):
         return ft.Row(
@@ -263,6 +288,25 @@ class AppDialog(ft.AlertDialog):
         )
 
     def create_subreddit_settings(self):
+
+        self.subreddit_field = ft.TextField(
+            bgcolor='#191c20',
+            value=self.SUBREDDIT,
+            border_color='#595957',
+            border_radius=12,
+            cursor_color='#F5980A',
+            text_style=ft.TextStyle(
+                font_family='Pixel'
+            ),
+            text_size=18,
+            helper='Example: AskReddit',
+            helper_style=ft.TextStyle(
+                font_family='Pixel',
+                color='#78787a',
+                size=16
+            )
+        )
+
         return ft.Container(
             padding=ft.Padding.only(top=10),
             content=ft.Column(
@@ -281,33 +325,36 @@ class AppDialog(ft.AlertDialog):
                             )
                         ]
                     ),
+
                     ft.Text(
                         value='Choose the subreddit to get posts from.',
                         font_family='Pixel',
                         color="#78787a",
                         size=16
-                        ),
-                    ft.TextField(
-                        bgcolor='#191c20',
-                        border_color='#595957',
-                        border_radius=12,
-                        cursor_color='#F5980A',
-                        text_style=ft.TextStyle(
-                            font_family='Pixel'
-                        ),
-                        text_size=18,
-                        helper='Example: AskReddit',
-                        helper_style=ft.TextStyle(
-                            font_family='Pixel',
-                            color='#78787a',
-                            size=16
-                        )
-                    )
+                    ),
+
+                    self.subreddit_field
                 ]
             )
         )
 
     def create_comments_settings(self):
+
+        self.comments_field = ft.TextField(
+            bgcolor='#191c20',
+            value=str(self.NUMBER_OF_COMMENTS),
+            border_color='#27282a',
+            cursor_color='#F5980A',
+            border_radius=0,
+            height=45,
+            width=120,
+            text_align=ft.TextAlign.CENTER,
+            text_style=ft.TextStyle(
+                font_family='Pixel'
+            ),
+            text_size=18
+        )
+
         return ft.Container(
             padding=ft.Padding.only(top=10),
             content=ft.Column(
@@ -326,50 +373,53 @@ class AppDialog(ft.AlertDialog):
                             )
                         ]
                     ),
+
                     ft.Text(
                         value='Set how many comments to include in a video.',
                         font_family='Pixel',
                         color="#78787a",
                         size=16
-                        ),
+                    ),
+
                     ft.Row(
                         spacing=0,
                         controls=[
                             ft.Container(
-                                border=ft.Border.all(color='#595957',width=2),
+                                border=ft.Border.all(
+                                    color='#595957',
+                                    width=2
+                                ),
                                 bgcolor='#191c20',
                                 border_radius=8,
                                 width=45,
                                 height=45,
+                                data=-1,
+                                on_click=lambda e: self.increment_values(e=e.control),
                                 content=ft.Icon(
                                     icon=ft.Icons.REMOVE_ROUNDED
                                 )
                             ),
-                            ft.TextField(
-                                bgcolor='#191c20',
-                                border_color='#27282a',
-                                cursor_color='#F5980A',
-                                border_radius=0,
-                                height=45,
-                                width=120,
-                                text_align=ft.TextAlign.CENTER,
-                                text_style=ft.TextStyle(
-                                    font_family='Pixel'
-                                ),
-                                text_size=15
-                            ),
+
+                            self.comments_field,
+
                             ft.Container(
-                                border=ft.Border.all(color='#595957',width=2),
+                                border=ft.Border.all(
+                                    color='#595957',
+                                    width=2
+                                ),
                                 bgcolor='#191c20',
                                 border_radius=8,
                                 width=45,
                                 height=45,
+                                data=1,
+                                on_click=lambda e: self.increment_values(e=e.control),
                                 content=ft.Icon(
                                     icon=ft.Icons.ADD_ROUNDED
                                 )
-                            ),                       
+                            ),
                         ]
                     ),
+
                     ft.Text(
                         value='Min: 1 ● Max: 20',
                         style=ft.TextStyle(
@@ -383,6 +433,22 @@ class AppDialog(ft.AlertDialog):
         )
 
     def create_length_settings(self):
+
+        self.length_field = ft.TextField(
+            bgcolor='#191c20',
+            value=str(self.MAX_COMMENT_CHAR),
+            border_color='#27282a',
+            cursor_color='#F5980A',
+            border_radius=0,
+            height=45,
+            width=120,
+            text_align=ft.TextAlign.CENTER,
+            text_style=ft.TextStyle(
+                font_family='Pixel'
+            ),
+            text_size=18
+        )
+
         return ft.Container(
             padding=ft.Padding.only(top=10),
             content=ft.Column(
@@ -401,50 +467,53 @@ class AppDialog(ft.AlertDialog):
                             )
                         ]
                     ),
+
                     ft.Text(
                         value='Set the maximum length (in characters) for a comment.',
                         font_family='Pixel',
                         color="#78787a",
                         size=16
-                        ),
+                    ),
+
                     ft.Row(
                         spacing=0,
                         controls=[
                             ft.Container(
-                                border=ft.Border.all(color='#595957',width=2),
+                                border=ft.Border.all(
+                                    color='#595957',
+                                    width=2
+                                ),
                                 bgcolor='#191c20',
                                 border_radius=8,
                                 width=45,
                                 height=45,
+                                data=-2,
+                                on_click=lambda e: self.increment_values(e=e.control),
                                 content=ft.Icon(
                                     icon=ft.Icons.REMOVE_ROUNDED
                                 )
                             ),
-                            ft.TextField(
-                                bgcolor='#191c20',
-                                border_color='#27282a',
-                                cursor_color='#F5980A',
-                                border_radius=0,
-                                height=45,
-                                width=120,
-                                text_align=ft.TextAlign.CENTER,
-                                text_style=ft.TextStyle(
-                                    font_family='Pixel'
-                                ),
-                                text_size=15
-                            ),
+
+                            self.length_field,
+
                             ft.Container(
-                                border=ft.Border.all(color='#595957',width=2),
+                                border=ft.Border.all(
+                                    color='#595957',
+                                    width=2
+                                ),
                                 bgcolor='#191c20',
                                 border_radius=8,
                                 width=45,
                                 height=45,
+                                data=2,
+                                on_click=lambda e: self.increment_values(e=e.control),
                                 content=ft.Icon(
                                     icon=ft.Icons.ADD_ROUNDED
                                 )
-                            ),                       
+                            ),
                         ]
                     ),
+
                     ft.Text(
                         value='Min: 50 ● Max: 1000',
                         style=ft.TextStyle(
@@ -458,11 +527,13 @@ class AppDialog(ft.AlertDialog):
         )
 
     def create_action_buttons(self):
+
         button1 = ft.Container(
             bgcolor="#17191E",
             width=100,
             height=40,
             border_radius=15,
+            on_click=lambda e: self.page.pop_dialog(),
             alignment=ft.alignment.Alignment.CENTER,
             border=ft.Border(
                 right=ft.BorderSide(6, "white"),
@@ -484,6 +555,7 @@ class AppDialog(ft.AlertDialog):
             height=40,
             border_radius=15,
             alignment=ft.alignment.Alignment.CENTER,
+            on_click=lambda e: self.save_settings(e),
             border=ft.Border(
                 right=ft.BorderSide(6, "white"),
                 bottom=ft.BorderSide(4, "white"),
@@ -501,29 +573,51 @@ class AppDialog(ft.AlertDialog):
         return [button1, button2]
 
     def content_construction(self):
+
         return ft.Container(
             width=400,
             height=600,
             content=ft.Column(
                 controls=[
                     self.create_heading(),
+
                     self.create_subreddit_settings(),
+
                     ft.Divider(
                         color='#595957',
                         leading_indent=5,
                         trailing_indent=5
                     ),
+
                     self.create_comments_settings(),
+
                     ft.Divider(
                         color='#595957',
                         leading_indent=5,
                         trailing_indent=5
                     ),
+
                     self.create_length_settings()
                 ]
             )
         )
-    
+
+    def save_settings(self, e):
+
+        subreddit = self.subreddit_field.value.strip()
+        number_of_comments = int(self.comments_field.value)
+        max_comment_char = int(self.length_field.value)
+
+        with open(USER_SETTINGS_PATH,'w',encoding='utf-8') as file:
+            new_data={
+                "subreddit": subreddit,
+                "number_of_comments": number_of_comments,
+                "max_comment_char": max_comment_char
+            }
+            dump(new_data,file)
+
+        self.page.pop_dialog()
+
 def main(page: ft.Page):
     RedditVideoMakerApp(page)
 

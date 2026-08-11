@@ -1,4 +1,5 @@
 from pathlib import Path
+from json import load
 
 # Root of the project
 ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -22,10 +23,8 @@ OUTPUT_PATH = ROOT_DIR / "output" / "output_video.mp4"
 # REDDIT
 # --------------------------------------
 
-SUBREDDIT = "AskReddit"
+USER_SETTINGS_PATH = ROOT_DIR / "src" / "user_settings.json"
 
-REDDIT_URL = f"https://www.reddit.com/r/{SUBREDDIT}/hot/"
-
-NUMBER_OF_COMMENTS = 8
-
-MAX_COMMENT_CHAR = 300
+def load_user_settings() -> dict:
+    with open(USER_SETTINGS_PATH, "r", encoding="utf-8") as file:
+        return load(file)
