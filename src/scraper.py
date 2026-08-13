@@ -103,7 +103,7 @@ class DataScraper:
                     f"{AUDIOS}/audio{index}.mp3",
                 )
             )
-            self.driver.sleep(0.5)
+            self.driver.sleep(1)
 
         with ThreadPoolExecutor(max_workers=4) as executor:
 
