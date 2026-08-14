@@ -7,9 +7,9 @@ A Python project that automatically turns Reddit posts into short-form videos.
 ## What it does
 
 * Gets posts from Reddit
-* Converts the post to speech
-* Generates subtitles
-* Creates a vertical video
+* Converts the post and comments to speech
+* Generates a vertical video
+* Adds Reddit post/comment screenshots
 * Saves the final video
 
 ## Tech Used
@@ -20,24 +20,39 @@ A Python project that automatically turns Reddit posts into short-form videos.
 * FFmpeg
 * Text-to-Speech
 
-## Updates for V0.1.1 (Completed ✅)
+## Current Version
 
-* [X] Improve the callback functionality 
-* [X] Add a GUI settings panel (requires splitting the config.py to two files)
-* [X] Improve the speed of voice generation and screenshots
-* [X] Add error handling stopping resource leakage
-* [X] Fix the size of the comment's screenshots for better scaling with the output video
+**V0.1.1** — Completed ✅
 
-## Future improvements
+## Completed Updates
+
+### V0.1.1
+
+* [x] Improve the callback functionality
+* [x] Add a GUI settings panel
+* [x] Improve the speed of voice generation and screenshots
+* [x] Add error handling and prevent resource leakage
+* [x] Fix the size of comment screenshots for better scaling with the output video
+
+## In Development 🚧
+
+The following features are currently being worked on:
 
 * [ ] Add subtitles
-* [ ] Add customization options with background video and voices
-* [ ] Improve the speed and efficiency of video making process
-* [ ] Add an AI Agent for generating content titles, tags, descriptions and thumbnails
+* [ ] Add customization options for background videos and voices
+* [ ] Improve the speed and efficiency of the video-making process
+* [ ] Add an AI Agent for generating content titles, tags, descriptions, and thumbnails
 
+## Roadmap
 
+Future versions will focus on improving customization, performance, subtitles, and automated content generation.
 
+### Planned priorities
 
+1. **Subtitles**
+2. **Customization options**
+3. **Video generation performance**
+4. **AI-powered content generation**
 
 ## Notes
 

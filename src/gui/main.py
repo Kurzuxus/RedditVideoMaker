@@ -246,11 +246,17 @@ class AppDialog(ft.AlertDialog):
         self.NUMBER_OF_COMMENTS = settings["number_of_comments"]
         self.MAX_COMMENT_CHAR = settings["max_comment_char"]
 
+        self.Images=["Minecraft","GTA","Subway"]
+
         self.content=self.content_construction()
         self.bgcolor='#17191E'
         self.scrollable=True
 
         self.actions=self.create_action_buttons() # type: ignore
+
+        # reponsive= self.content.content.controls[-1].content.controls[2].controls
+        # for i in reponsive:
+        #     print(i.controls[0].data)
 
     def increment_values(self, e:ft.ControlEvent):
         if abs(e.data) == 1:
@@ -526,6 +532,70 @@ class AppDialog(ft.AlertDialog):
             )
         )
 
+    def background_video_selection(self):
+        return ft.Container(
+            padding=ft.Padding.only(top=10),
+            content=ft.Column(
+                controls=[
+                    ft.Row(
+                        controls=[
+                            ft.Icon(
+                                icon=ft.Icons.CIRCLE_ROUNDED,
+                                color="#F5980A",
+                                size=10
+                            ),
+                            ft.Text(
+                                value="Background Video",
+                                font_family="Pixel",
+                                size=22,
+                            )
+                        ]
+                    ),
+
+                    ft.Text(
+                        value='Choose the background video for your short.',
+                        font_family='Pixel',
+                        color="#78787a",
+                        size=16
+                    ),
+
+                    ft.ResponsiveRow(
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                        columns=9,
+                        controls=[
+                            ft.Column(
+                                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                                spacing=5,
+                                col=3,
+                                controls=[
+                                    ft.Container(
+                                        border_radius=12,
+                                        border=ft.Border.all(
+                                            width=2,
+                                            color='#595957'
+                                        ),
+                                        data=i,
+                                        content=ft.Image(
+                                            src=f"{i}.png"
+                                        ),
+                                    ),
+                                    ft.Text(
+                                        value=i,
+                                        font_family='Pixel',
+                                        size=18,
+                                        color='white',
+                                    ),
+                                ],
+                            )
+                            for i in self.Images
+                        ]
+                    )
+                ]
+            )
+        )
+
+
     def create_action_buttons(self):
 
         button1 = ft.Container(
@@ -575,8 +645,8 @@ class AppDialog(ft.AlertDialog):
     def content_construction(self):
 
         return ft.Container(
-            width=400,
-            height=600,
+            width=500,
+            height=1000,
             content=ft.Column(
                 controls=[
                     self.create_heading(),
@@ -597,7 +667,15 @@ class AppDialog(ft.AlertDialog):
                         trailing_indent=5
                     ),
 
-                    self.create_length_settings()
+                    self.create_length_settings(),
+
+                    ft.Divider(
+                        color='#595957',
+                        leading_indent=5,
+                        trailing_indent=5
+                    ),
+
+                    self.background_video_selection()
                 ]
             )
         )
