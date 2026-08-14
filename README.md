@@ -40,7 +40,7 @@ The following features are currently being worked on:
 
 * [ ] Add subtitles
 * [ ] Add customization options for background videos and voices
-* [ ] Improve the speed and efficiency of the video-making process
+* [ ] Add the ability to choose from two video types of content (comment posts and stories)
 * [ ] Add an AI Agent for generating content titles, tags, descriptions, and thumbnails
 
 ## Roadmap
