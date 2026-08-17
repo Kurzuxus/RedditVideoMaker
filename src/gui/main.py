@@ -245,8 +245,10 @@ class AppDialog(ft.AlertDialog):
         self.SUBREDDIT = settings["subreddit"]
         self.NUMBER_OF_COMMENTS = settings["number_of_comments"]
         self.MAX_COMMENT_CHAR = settings["max_comment_char"]
+        self.BACKGROUND_VIDEO=settings['background_video']
 
         self.Images=["Minecraft","GTA","Subway"]
+        self.SELECTED_VIDEO=self.BACKGROUND_VIDEO
 
         self.content=self.content_construction()
         self.bgcolor='#17191E'
@@ -254,9 +256,18 @@ class AppDialog(ft.AlertDialog):
 
         self.actions=self.create_action_buttons() # type: ignore
 
-        # reponsive= self.content.content.controls[-1].content.controls[2].controls
-        # for i in reponsive:
-        #     print(i.controls[0].data)
+
+
+    def bg_video_change(self,e:ft.ControlEvent):
+        reponsive= self.content.content.controls[-1].content.controls[2].controls
+        for i in reponsive:
+            card_data :str = i.controls[0].data
+            if e.control.data == card_data:
+                e.control.border=ft.Border.all(width=2,color='#F5980A')
+                self.SELECTED_VIDEO :str = card_data
+                continue
+            i.controls[0].border= ft.Border.all(width=2,color='#595957')
+
 
     def increment_values(self, e:ft.ControlEvent):
         if abs(e.data) == 1:
@@ -573,9 +584,10 @@ class AppDialog(ft.AlertDialog):
                                         border_radius=12,
                                         border=ft.Border.all(
                                             width=2,
-                                            color='#595957'
+                                            color='#F5980A' if i==self.BACKGROUND_VIDEO else '#595957'
                                         ),
                                         data=i,
+                                        on_click=lambda e: self.bg_video_change(e=e),
                                         content=ft.Image(
                                             src=f"{i}.png"
                                         ),
@@ -594,7 +606,6 @@ class AppDialog(ft.AlertDialog):
                 ]
             )
         )
-
 
     def create_action_buttons(self):
 
@@ -690,7 +701,8 @@ class AppDialog(ft.AlertDialog):
             new_data={
                 "subreddit": subreddit,
                 "number_of_comments": number_of_comments,
-                "max_comment_char": max_comment_char
+                "max_comment_char": max_comment_char,
+                "background_video": self.SELECTED_VIDEO
             }
             dump(new_data,file)
 
