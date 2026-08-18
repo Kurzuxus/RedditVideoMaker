@@ -15,7 +15,7 @@ IMAGES = GENERATED / "images"
 
 AUDIOS = GENERATED / "audios"
 
-MINECRAFT_VIDEO = ASSETS / "minecraft" / "minecraft.mp4"
+BACKGROUND_VIDEO = ASSETS / "bg_videos"
 
 OUTPUT_PATH = ROOT_DIR / "output" / "output_video.mp4"
 

@@ -3,6 +3,8 @@ experiment/
 downloaded_files/
 src/__pycache__
 tiktok_voice/
-assets/minecraft/minecraft.mp4
 output/output_video.mp4
 main.spec
+assets/bg_videos/Subway.mp4
+assets/bg_videos/Minecraft.mp4
+assets/bg_videos/GTA.mp4

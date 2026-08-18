@@ -12,13 +12,19 @@ from moviepy import (
 from src.config import (
     IMAGES,
     AUDIOS,
-    MINECRAFT_VIDEO,
+    BACKGROUND_VIDEO,
     OUTPUT_PATH,
+    load_user_settings
     )
 
 
 class VideoEditor:
     def __init__(self,callback=None) -> None:
+
+        settings=load_user_settings()
+
+        self.BG_VIDEO :str = settings["background_video"]
+
         self.callback=callback
 
         self.audio_clips: list[AudioFileClip] = []
@@ -27,6 +33,8 @@ class VideoEditor:
         self.story = None
         self.background = None
         self.final_video = None
+
+
 
     def run(self) -> None:
         try:
@@ -85,7 +93,7 @@ class VideoEditor:
         duration: float,
     ) -> VideoFileClip:
 
-        minecraft = VideoFileClip(str(MINECRAFT_VIDEO))
+        minecraft = VideoFileClip(str(f'{BACKGROUND_VIDEO}/{self.BG_VIDEO}.mp4'))
         self.video_clips.append(minecraft)
 
         max_start = minecraft.duration - duration
